@@ -34,17 +34,17 @@ int call_dgesv(matrix_t * A, vector_t * b) {
 
   if (A == NULL || b == NULL)
   {
-    return -9;
+    return NULL_INPUT;
   }
   
   if (A->A == NULL || b->v == NULL)
   {
-    return -9;
+    return NULL_INPUT;
   }
   
   if (A->A[0] == NULL)
   {
-    return -9;
+    return NULL_INPUT;
   }
   
   if (A->m <= 0 || A->n <= 0 || b->n <= 0)
@@ -54,12 +54,12 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   
   if (A->m != A->n)
   {
-    return -10;
+    return NON_SQUARE_MATRIX;
   }
   
   if (A->n != b->n)
   {
-    return -11;
+    return INCOMPATIBLE_DIMENSIONS;
   }
   
   int n = A->n, LDB = 1, nrhs = 1, info = 0;
@@ -67,7 +67,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
 
   if (IPIV == NULL) 
   {
-    return -12;
+    return MEMORORY_ALLOCATION_ERROR;
   }
   
   dgesv_(&n, &nrhs, *(A->A), &n, IPIV, b->v, &LDB, &info);  
