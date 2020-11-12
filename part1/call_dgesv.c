@@ -1,4 +1,8 @@
 #include "matrix_io.h"
+#define NULL_INPUT -9
+#define NON_SQUARE_MATRIX -10
+#define INCOMPATIBLE_DIMENSIONS -11
+#define MEMORORY_ALLOCATION_ERROR -12
 
 /* C prototype for LAPACK routine DGESV */
 void dgesv_(const int *n,    /* columns/rows in A          */
@@ -51,7 +55,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   int n = A->n, LDB = 1, nrhs = 1, info = 0;
   int * IPIV = malloc(n*n*sizeof(int));
 
-  if (IPIV == NULL)
+  if (IPIV == NULL) 
   {
     return -12;
   }
