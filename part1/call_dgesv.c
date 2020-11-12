@@ -45,7 +45,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   
   if (A->m <= 0 || A->n <= 0 || b->n <= 0)
   {
-    /* code */
+    return MATRIX_IO_FAILURE;
   }
   
   if (A->m != A->n)
@@ -59,7 +59,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   }
   
   int n = A->n, LDB = 1, nrhs = 1, info = 0;
-  int * IPIV = malloc(n*n*sizeof(int));
+  int * IPIV = malloc(n*sizeof(int));
 
   if (IPIV == NULL)
   {
@@ -68,5 +68,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   
   dgesv_(&n, &nrhs, *(A->A), &n, IPIV, b->v, &LDB, &info);  
   
+  free_matrix(IPIV);
+
   return info;
 }
