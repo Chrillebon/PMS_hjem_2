@@ -72,7 +72,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   
   dgesv_(&n, &nrhs, *(A->A), &n, IPIV, b->v, &LDB, &info);  
   
-  free_vector(IPIV);
+  free(IPIV);
 
   return info;
 }
