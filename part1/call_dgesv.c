@@ -36,7 +36,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   {
     return NULL_INPUT;
   }
-  
+
   if (A->A == NULL || b->v == NULL)
   {
     return NULL_INPUT;
@@ -65,6 +65,15 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   int n = A->n, LDB = 1, nrhs = 1, info = 0;
   int * IPIV = malloc(n*sizeof(int));
 
+  // transposing
+  double ** temp = malloc(n*n*sizeof(double));
+  for (size_t i = 0; i < n; i++) {
+    // scopy takes which should copy the rows of a matrix
+    // into the columns (in this case) of another matrix.
+    scopy(n, A->A[i], 1, &(temp[0][i]), n);
+    
+  }
+   
   if (IPIV == NULL) 
   {
     return MEMORORY_ALLOCATION_ERROR;
