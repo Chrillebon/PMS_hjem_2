@@ -4,6 +4,7 @@
 
 int main(void) {    
 
+    /* Read matrix and vector from txt file */
     matrix_t * A = read_matrix("A.txt");
     vector_t * b = read_vector("b.txt");
 
@@ -11,6 +12,7 @@ int main(void) {
 
     int info = call_dgesv(A,b);
 
+    /* Present solution */
     if (info == 0)
     {
         print_matrix(A);
