@@ -27,7 +27,7 @@ following exceptions: the return value is
    -12 in case of memory allocation errors.
 */
 int call_dgesv(matrix_t * A, vector_t * b) {
-  
+
   if (A == NULL || b == NULL)
   {
     return -9;
@@ -36,6 +36,16 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   if (A->A == NULL || b->v == NULL)
   {
     return -9;
+  }
+  
+  if (A->A[0] == NULL)
+  {
+    return -9;
+  }
+  
+  if (A->m <= 0 || A->n <= 0 || b->n <= 0)
+  {
+    /* code */
   }
   
   if (A->m != A->n)
