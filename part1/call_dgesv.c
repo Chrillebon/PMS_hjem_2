@@ -31,7 +31,7 @@ following exceptions: the return value is
    -12 in case of memory allocation errors.
 */
 int call_dgesv(matrix_t * A, vector_t * b) {
-  
+
   if (A == NULL || b == NULL)
   {
     return -9;
@@ -40,6 +40,16 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   if (A->A == NULL || b->v == NULL)
   {
     return -9;
+  }
+  
+  if (A->A[0] == NULL)
+  {
+    return -9;
+  }
+  
+  if (A->m <= 0 || A->n <= 0 || b->n <= 0)
+  {
+    return MATRIX_IO_FAILURE;
   }
   
   if (A->m != A->n)
@@ -53,7 +63,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   }
   
   int n = A->n, LDB = 1, nrhs = 1, info = 0;
-  int * IPIV = malloc(n*n*sizeof(int));
+  int * IPIV = malloc(n*sizeof(int));
 
   if (IPIV == NULL) 
   {
@@ -62,5 +72,7 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   
   dgesv_(&n, &nrhs, *(A->A), &n, IPIV, b->v, &LDB, &info);  
   
+  free_matrix(IPIV);
+
   return info;
 }
