@@ -2,7 +2,7 @@
 CC = gcc
 CFLAGS = -Wall -std=c99 -g
 LDFLAGS = -L.
-LDLIBS = -lopenblas
+LDLIBS = -lopenblas -llapack
 CFILES = matrix_io.c call_dgesv.c main.c
 TARGET = program
 
