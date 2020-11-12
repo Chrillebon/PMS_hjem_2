@@ -42,18 +42,15 @@ int call_dgesv(matrix_t * A, vector_t * b) {
     return -11;
   }
   
+  int n = A->n, LDB = 1, nrhs = 1, info = 0;
+  int * IPIV = malloc(n*n*sizeof(int));
 
-
-
-
-
-
-
-
-
-
-
-
-
-  return *info;
+  if (IPIV == NULL)
+  {
+    return -12;
+  }
+  
+  dgesv_(&n, &nrhs, *(A->A), &n, IPIV, b->v, &LDB, &info);  
+  
+  return info;
 }

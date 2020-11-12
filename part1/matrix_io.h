@@ -71,4 +71,6 @@ void print_vector(vector_t * pv);
 void print_matrix(matrix_t * pm);
 void print_sparse_triplet(sparse_triplet_t * pst);
 
+int call_dgesv(matrix_t * A, vector_t * b);
+
 #endif
