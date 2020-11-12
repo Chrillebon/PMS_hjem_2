@@ -15,7 +15,9 @@ void dgesv_(const int *n,    /* columns/rows in A          */
             int *info        /* status code                */
             );
 
+
 /* call_dgesv : wrapper for LAPACK's DGESV routine
+
 
 Purpose:
 Solves system of equations A*x=b using LAPACK's DGESV routine
@@ -62,24 +64,38 @@ int call_dgesv(matrix_t * A, vector_t * b) {
     return INCOMPATIBLE_DIMENSIONS;
   }
   
-  int n = A->n, LDB = 1, nrhs = 1, info = 0;
+  int n = A->n, LDB = n, nrhs = 1, info = 0;
   int * IPIV = malloc(n*sizeof(int));
 
   // transposing
-  double ** temp = malloc(n*n*sizeof(double));
-  for (size_t i = 0; i < n; i++) {
-    // scopy takes which should copy the rows of a matrix
-    // into the columns (in this case) of another matrix.
-    scopy(n, A->A[i], 1, &(temp[0][i]), n);
-    
+  double ** temp = malloc(n*sizeof(double*));
+  if (temp == NULL)
+  {
+    return MEMORORY_ALLOCATION_ERROR;
   }
+  temp[0] = malloc(n*n*sizeof(double));
+  if (temp[0] == NULL)
+  {
+    free(temp);
+    return MEMORORY_ALLOCATION_ERROR;
+  }
+  for (size_t i = 1; i < n; i++) {
+    temp[i] = temp[0] + i*n;
+  }
+  
+  // Transposing
+  for (size_t i = 0; i < n; i++) {
+    for (size_t j = 0; j < n; j++) {
+      temp[i][j] = A->A[j][i];
+    }
+  }  
    
   if (IPIV == NULL) 
   {
     return MEMORORY_ALLOCATION_ERROR;
   }
   
-  dgesv_(&n, &nrhs, *(A->A), &n, IPIV, b->v, &LDB, &info);  
+  dgesv_(&n, &nrhs, *temp, &n, IPIV, b->v, &LDB, &info);  
   
   free(IPIV);
 
