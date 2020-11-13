@@ -33,41 +33,46 @@ following exceptions: the return value is
    -12 in case of memory allocation errors.
 */
 int call_dgesv(matrix_t * A, vector_t * b) {
-
+  // Testing if input is NULL
   if (A == NULL || b == NULL)
   {
     return NULL_INPUT;
   }
-
+  // Testing if A or v are NULL
   if (A->A == NULL || b->v == NULL)
   {
     return NULL_INPUT;
   }
-  
+  // Testing if A[0] is NULL
   if (A->A[0] == NULL)
   {
     return NULL_INPUT;
   }
-  
+  // Testing for illegal dimensions
   if (A->m <= 0 || A->n <= 0 || b->n <= 0)
   {
     return MATRIX_IO_FAILURE;
   }
-  
+  // Testing for non-square matrix
   if (A->m != A->n)
   {
     return NON_SQUARE_MATRIX;
   }
-  
+  // testing for incompatible dimensions.
   if (A->n != b->n)
   {
     return INCOMPATIBLE_DIMENSIONS;
   }
-  
+
+  // Creating local variables
   int n = A->n, LDB = n, nrhs = 1, info = 0;
   int * IPIV = malloc(n*sizeof(int));
+  if(IPIV == NULL)
+  {
+    return MEMORORY_ALLOCATION_ERROR;
+  }
 
-  // transposing
+  // Creating empty matrix for argument in dgesv_
   double ** temp = malloc(n*sizeof(double*));
   if (temp == NULL)
   {
@@ -82,22 +87,21 @@ int call_dgesv(matrix_t * A, vector_t * b) {
   for (size_t i = 1; i < n; i++) {
     temp[i] = temp[0] + i*n;
   }
-  
-  // Transposing
+
+  // Transposing A->A into temp
   for (size_t i = 0; i < n; i++) {
     for (size_t j = 0; j < n; j++) {
       temp[i][j] = A->A[j][i];
     }
-  }  
-   
-  if (IPIV == NULL) 
-  {
-    return MEMORORY_ALLOCATION_ERROR;
   }
-  
-  dgesv_(&n, &nrhs, *temp, &n, IPIV, b->v, &LDB, &info);  
-  
+
+  // Calling function
+  dgesv_(&n, &nrhs, *temp, &n, IPIV, b->v, &LDB, &info);
+
+  // Trash collection
   free(IPIV);
+  free(temp[0]);
+  free(temp);
 
   return info;
 }
