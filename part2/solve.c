@@ -139,32 +139,40 @@ int main(int argc, char *argv[]) {
   returnval = local_call_dgesv(A,b);
 
   // Error handling
-  if(returnval == NULL_INPUT)
+  if(returnval != 0)
   {
+    if(returnval == NULL_INPUT)
+    {
+      free_matrix(A);
+      free_vector(b);
+      fprintf(stderr, "Testing for NULL before sending into function failed!\n");
+      return EXIT_FAILURE;
+    }
+    if(returnval == NON_SQUARE_MATRIX)
+    {
+      free_matrix(A);
+      free_vector(b);
+      fprintf(stderr, "The matrix found in %s was non-square!\n", argv[1]);
+      return EXIT_FAILURE;
+    }
+    if(returnval == INCOMPATIBLE_DIMENSIONS)
+    {
+      free_matrix(A);
+      free_vector(b);
+      fprintf(stderr, "The matrix from %s, and the vector from %s had incompatible dimensions!\n", argv[1], argv[2]);
+      return EXIT_FAILURE;
+    }
+    if(returnval == MEMORORY_ALLOCATION_ERROR)
+    {
+      free_matrix(A);
+      free_vector(b);
+      fprintf(stderr, "Memory allocation failed trying to solve the system Ax=b\n");
+      return EXIT_FAILURE;
+    }
+    // singular system (other failure)
     free_matrix(A);
     free_vector(b);
-    fprintf(stderr, "Testing for NULL before sending into function failed!\n");
-    return EXIT_FAILURE;
-  }
-  if(returnval == NON_SQUARE_MATRIX)
-  {
-    free_matrix(A);
-    free_vector(b);
-    fprintf(stderr, "The matrix found in %s was non-square!\n", argv[1]);
-    return EXIT_FAILURE;
-  }
-  if(returnval == INCOMPATIBLE_DIMENSIONS)
-  {
-    free_matrix(A);
-    free_vector(b);
-    fprintf(stderr, "The matrix from %s, and the vector from %s had incompatible dimensions!\n", argv[1], argv[2]);
-    return EXIT_FAILURE;
-  }
-  if(returnval == MEMORORY_ALLOCATION_ERROR)
-  {
-    free_matrix(A);
-    free_vector(b);
-    fprintf(stderr, "Memory allocation failed trying to solve the system Ax=b\n");
+    fprintf(stderr, "Failed to solve the system Ax=b\n");
     return EXIT_FAILURE;
   }
   // Computing solution succeeded
