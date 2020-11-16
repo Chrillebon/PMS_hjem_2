@@ -3,7 +3,7 @@ CC=gcc
 CFLAGS=-Wall -std=c99 -g
 LDFLAGS=-L.
 LDLIBS=-lopenblas
-CFILES = matrix_io.c call_dgesv.c testing_multiple.c
+CFILES = matrix_io.c testing_multiple.c
 TARGET = program
 
 ifeq ($(shell uname), Darwin)

@@ -119,9 +119,9 @@ int vectorcompare(vector_t * ans, vector_t * b, char * output)
   double epsilon = 1e-15;
   for(int i=0;i<ans->n;i++)
   {
-    if(ans->v[i]-b->v[i] >= epsilon)
+    if(ans->v[i] - b->v[i] >= epsilon)
     {
-      sprintf(output, "Absolute discreptency detected at line %d\n", i);
+      sprintf(output, "Absolute discreptency detected at line %d\nMatLab vs This algorithm:\n%.25lf vs \n%.25lf", i,ans->v[i],b->v[i]);
       return -2;
     }
     /*if((ans->v[i]-b->v[i])/ >= epsilon)
@@ -135,13 +135,12 @@ int vectorcompare(vector_t * ans, vector_t * b, char * output)
 
 
 int main() {
-
-  char * A_test = "Ai.txt";
-  char * b_test = "bi.txt";
-  char * x_test = "xi.txt";
+  char A_test[] = "Ai.txt";
+  char b_test[] = "bi.txt";
+  char x_test[] = "xi.txt";
 
   // Update this for every new testcase
-  int testcases = 1;
+  int testcases = 7;
 
   if(testcases >= 10)
   {
@@ -159,10 +158,10 @@ int main() {
   // Running all tesetcases
   for(int i=0;i<testcases;i++)
   {
-    // Changing filenames
-    itoa(i, &A_test[1], 1);
-    itoa(i, &b_test[1], 1);
-    itoa(i, &x_test[1], 1);
+    // Changing filenames by adding ascii-code
+    A_test[1] = i+48;
+    b_test[1] = i+48;
+    x_test[1] = i+48;
 
     // Opening matrix A
     A = read_matrix(A_test);
@@ -250,19 +249,19 @@ int main() {
   }
 
   // Testing that it works:
-  char * ans = "xi_.txt";
+  char ans[] = "xi_.txt";
   char errormessage[100] = "NONE";
   char erroroutput[100] = "NONE";
   for(int i=0;i<testcases;i++)
   {
-    itoa(i, &ans[1], 1);
-    itoa(i, &b_test[1], 1);
+    ans[1] = i+48;
+    x_test[1] = i+48;
 
     // testing for errors:
     x_print = fopen(ans, "r");
     fgets(errormessage, 101, x_print);
     fclose(x_print);
-    x_print = fopen(b_test, "r");
+    x_print = fopen(x_test, "r");
     fgets(erroroutput, 101, x_print);
     fclose(x_print);
 
@@ -272,12 +271,14 @@ int main() {
     }
     else
     {
-      b = read_vector(b_test);
+      b = read_vector(x_test);
       x_res = read_vector(ans);
 
       returnval = vectorcompare(x_res, b, errormessage);
+      //printf("finished with exitcode %d\n", returnval);
       if(returnval != 0)
       {
+        fprintf(stderr, "%s\n", errormessage);
         continue;
       }
       else

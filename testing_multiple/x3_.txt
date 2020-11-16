@@ -1,1 +1,1 @@
-ERROR matrix_nonsquare_
+ERROR matrix_nonsquare_-10
